@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Metro Room Finder</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-r from-gray-100 to-gray-200 flex items-center justify-center min-h-screen">
+  <div class="bg-white shadow-2xl rounded-2xl p-8 w-96 border border-gray-200">
+    <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">🚇 Metro Room Finder</h1>
+
+    <!-- Line Dropdown -->
+    <label class="block mb-2 font-medium text-gray-700">Select Line</label>
+    <select id="line"
+            class="w-full border border-gray-300 rounded-xl p-3 mb-5 bg-gray-50 text-gray-700 focus:ring-2 focus:ring-purple-400 focus:outline-none transition">
+      <option value="">-- Choose Line --</option>
+      <option value="1">Line 1</option>
+      <option value="2">Line 2</option>
+    </select>
+
+    <!-- Station Dropdown -->
+    <label class="block mb-2 font-medium text-gray-700">Select Station</label>
+    <select id="station" 
+            class="w-full border border-gray-300 rounded-xl p-3 mb-5 bg-gray-50 text-gray-700 focus:ring-2 focus:ring-blue-400 focus:outline-none transition">
+      <option value="">-- Choose Station --</option>
+      <option value="2A1 king saud university">2A1 - King Saud University</option>
+      <option value="2A2 King Salman Oasis">2A2 - King Salman Oasis</option>
+      <option value="2A3 KAST">2A3 - KAST</option>
+      <option value="2B1 Al Takhassussi">2B1 - Al Takhassussi</option>
+      <option value="2B2 STC">2B2 - STC</option>
+      <option value="2B4 AL Wurud ">2B4 - Al Wurud</option>
+      <option value="2C1 King Abdulaziz Road ">2C1 - King Abdulaziz Road</option>
+      <option value="2C2 Ministry of education ">2C2 - Ministry of Education</option>
+      <option value="2C4 Al Nuzhah">2C4 - Al Nuzhah</option>
+      <option value="2C3 Riyadh Exhibition Centre">2C3 - Riyadh Exhibition Centre</option>
+      <option value="2D2 Khalid Bin Alwaleed road">2D2 - Khalid Bin Alwaleed Road</option>
+      <option value="2E1 Al Hamra">2E1 - Al Hamra</option>
+      <option value="2E2 Al Khaleej">2E2 - Al Khaleej</option>
+      <option value="2F1 Ishbiliyah ">2F1 - Ishbiliyah</option>
+      <option value="2G1 King Fahad Stadium">2G1 - King Fahad Stadium</option>
+      <!--  Line 1 -->
+      
+
+
+    </select>
+
+    <!-- Room Dropdown -->
+    <label class="block mb-2 font-medium text-gray-700">Select Room</label>
+    <select id="room" 
+            class="w-full border border-gray-300 rounded-xl p-3 mb-5 bg-gray-50 text-gray-700 focus:ring-2 focus:ring-green-400 focus:outline-none transition">
+      <option value="">-- Choose Room --</option>
+      <option value="SIG/PSD">SIG/PSD</option>
+      <option value="COM">COM</option>
+      <option value="REL">REL</option>
+    </select>
+
+    <!-- Auto-Filled Result -->
+    <div id="result" class="mt-6 p-4 bg-gray-50 border border-gray-200 rounded-xl hidden">
+      <p class="mb-2"><strong class="text-gray-800">Room ID:</strong> <span id="roomId"></span></p>
+      <p><strong class="text-gray-800">Info:</strong> <span id="info"></span></p>
+    </div>
+  </div>
+
+  <script>
+    const data = {
+      "2A1 king saud university": { "SIG/PSD": { "room_id": "F01.A133", "info": "First floor, in front of ticket window, corridor A133." }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+      "2A2 King Salman Oasis": { "SIG/PSD": { "room_id": "F01-A103-A110", "info": "First floor, in front of ticket window, next to SMR room." }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+      "2A3 KAST": { "SIG/PSD": { "room_id": "B03.21", "info": "Under platform, next to the stairs, Exit 1 side." }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+      "2B1 Al Takhassussi": { "SIG/PSD": { "room_id": "P02.23", "info": "Platform level, next to SMR room, East side." }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+      "2B2 STC": { "SIG/PSD": { "room_id": "P01.064", "info": "Platform Line2, last door left toward King Fahad City Station." }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+      "2B4 AL Wurud ": { "SIG/PSD": { "room_id": "P03.052", "info": "Platform level, from elevator toward KSU right side, corridor P03.011." }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+      "2C1 King Abdulaziz Road ": { "SIG/PSD": { "room_id": "P02.11", "info": "Near Exit 1 elevator (King Abdullah Road)." }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+      "2C2 Ministry of education ": { "SIG/PSD": { "room_id": "B01.48", "info": "Lobby level near men’s restroom." }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+      "2C4 Al Nuzhah": { "SIG/PSD": { "room_id": "B01.13", "info": "Basement level, stairs F04.21, last corridor." }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+      "2C3 Riyadh Exhibition Centre": { "SIG/PSD": { "room_id": "F01.A103.110", "info": "Behind ticket window near men’s restroom, corridor F01-A166." }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+      "2D2 Khalid Bin Alwaleed road": { "SIG/PSD": { "room_id": "P02.23", "info": "Platform level next to elevator Exit 2." }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+      "2E1 Al Hamra": { "SIG/PSD": { "room_id": "PO2.14", "info": "Platform Line2 next to elevator Exit 5." }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+      "2E2 Al Khaleej": { "SIG/PSD": { "room_id": "P02.09", "info": "Platform level next to elevator Exit 1." }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+      "2F1 Ishbiliyah ": { "SIG/PSD": { "room_id": "B01.20", "info": "Under platform next to communication room." }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+      "2G1 King Fahad Stadium": { "SIG/PSD": { "room_id": "B01.21", "info": "Behind the ticket window exit 1." }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+
+
+
+      "1Y1 SAB Bank": { "SIG/PSD": { "room_id": "103-110", "info": "Ground floor, near male restroom, corridor 08, next to SMR" }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+      "1Z1 - Dr. Sulaiman Al Habib": { "SIG/PSD": { "room_id": "103-110", "info": "Ground floor, turn left, left from elevator, enter the corridor next restrooms, the room will be on the right" }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+"1A1 - KAFD": { "SIG/PSD": { "room_id": "B01-46", "info": "Basement 1 south corner, barking lot, infront of escelator" }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+      "1A2 - Al Murooj": { "SIG/PSD": { "room_id": "P03.016", "info": "Platform area, corridor 18 near elevator" }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+ "1B1 - King Fahad District": { "SIG/PSD": { "room_id": "P06.009", "info": "Platform area, Near SMR" }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+      "1B2 - King Fahad District 2": { "SIG/PSD": { "room_id": "P06.009", "info": "platform area, enter corridor then turn left" }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+"1B3 - STC": { "SIG/PSD": { "room_id": "P02.056", "info": "Platform 2, corridor 1, second room on the right" }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+      "1B4 - Al Wurud 2": { "SIG/PSD": { "room_id": "", "info": "" }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+ "1C1 - Al Urubah": { "SIG/PSD": { "room_id": "", "info": "" }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+      "1C2 - AlInma bank": { "SIG/PSD": { "room_id": "", "info": "" }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+"1C3 - Bank Albilad": { "SIG/PSD": { "room_id": "", "info": "" }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+      "1C4 - King Fahad Library": { "SIG/PSD": { "room_id": "", "info": "" }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+ "1D2 - Ministry of Interior": { "SIG/PSD": { "room_id": "", "info": "" }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+      "1D5 - Al Murabba": { "SIG/PSD": { "room_id": "", "info": "" }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+"1E2 - Passport Department": { "SIG/PSD": { "room_id": "", "info": "" }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+      "1F4 - National Museum": { "SIG/PSD": { "room_id": "", "info": "" }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+"1F5 - Al Batha": { "SIG/PSD": { "room_id": "", "info": "" }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+      "1F7 - Qasr Al Hokm": { "SIG/PSD": { "room_id": "", "info": "" }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+     "1F8 - Al Owd": { "SIG/PSD": { "room_id": "P03.741", "info": "Platform area, exit door, keep staight door will be on the left" }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+ "1F9 - Skirinah": { "SIG/PSD": { "room_id": "F01-A103-A110", "info": "Ground floor, corridor 8 next to Male Restroom, on the left side" }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+      "1G1 - Manfuhah": { "SIG/PSD": { "room_id": "F01-A103-A110", "info": "Corridor next to SMR, in front of the restrooms, on the right side" }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+"1G2 - Al Iman Hospital": { "SIG/PSD": { "room_id": "F01-A103-A110", "info": "Ground floor, next to Male Restroom, First room on the right side" }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+      "1H2 - Transportation Center": { "SIG/PSD": { "room_id": "F01-A103-A110", "info": "Ground floor, corridor 10, next to Male Restroom, First room on the right side" }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+ "1J1 - Al Aziziah": { "SIG/PSD": { "room_id": "F01-A103-A110", "info": "F01-A103-A110" }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+      "1J2 - Ad Dar Al Baida": { "SIG/PSD": { "room_id": "F01-A103-A110", "info": "Ground floor, corridor 10, next to Male Restroom, First room on the right side" }, "COM": { "room_id": "", "info": "" }, "REL": { "room_id": "", "info": "" } },
+
+
+    };
+
+    const lineSelect = document.getElementById("line");
+    const stationSelect = document.getElementById("station");
+    const roomSelect = document.getElementById("room");
+    const result = document.getElementById("result");
+
+    function updateResult() {
+      const station = stationSelect.value;
+      const room = roomSelect.value;
+
+      if (station && room) {
+        if (data[station]?.[room]) {
+          const details = data[station][room];
+          document.getElementById("roomId").textContent = details.room_id;
+          document.getElementById("info").textContent = details.info;
+          result.classList.remove("hidden");
+        } else {
+          document.getElementById("roomId").textContent = "N/A";
+          document.getElementById("info").textContent = "No data available for this station/room.";
+          result.classList.remove("hidden");
+        }
+      } else {
+        result.classList.add("hidden");
+      }
+    }
+
+    stationSelect.addEventListener("change", updateResult);
+    roomSelect.addEventListener("change", updateResult);
+
+    // Filter stations by selected line
+    lineSelect.addEventListener("change", () => {
+      const line = lineSelect.value;
+      stationSelect.innerHTML = '<option value="">-- Choose Station --</option>';
+      roomSelect.value = "";
+      result.classList.add("hidden");
+
+      Object.keys(data).forEach(station => {
+        if (station.startsWith(line)) {
+          let opt = document.createElement("option");
+          opt.value = station;
+          opt.textContent = station;
+          stationSelect.appendChild(opt);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
